@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meu Dia Saudável</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:      #faf6ef;
+      --cream2:     #f2ece0;
+      --sage:       #6b9e72;
+      --sage-light: #a8cba8;
+      --sage-bg:    #eef5ee;
+      --terra:      #c4714e;
+      --terra-bg:   #faeee8;
+      --water:      #4fa3c7;
+      --water-bg:   #e8f4f9;
+      --water-fill: #b8dff0;
+      --warm:       #8b6352;
+      --text:       #2d2318;
+      --muted:      #9a8878;
+      --card-bg:    #ffffff;
+      --border:     #e8e0d4;
+      --radius:     16px;
+      --shadow:     0 2px 18px rgba(45,35,24,.07);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      font-family: 'Nunito Sans', sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── BG TEXTURE ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 70% 40% at 0% 0%,   rgba(107,158,114,.10) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 100% 100%, rgba(196,113,78,.08) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 60% at 50% 50%,  rgba(79,163,199,.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* ── LAYOUT ── */
+    .page {
+      position: relative; z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      margin-bottom: 36px;
+      animation: fadeUp .6s ease both;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .header-left h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.9rem, 5vw, 2.8rem);
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.1;
+    }
+
+    .header-left h1 span { color: var(--sage); }
+
+    .header-left p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: .95rem;
+      font-weight: 300;
+    }
+
+    #data-hoje {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 8px 18px;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--warm);
+      letter-spacing: .03em;
+      box-shadow: var(--shadow);
+      white-space: nowrap;
+    }
+
+    /* ── ALERTA ÁGUA ── */
+    #alerta-agua {
+      display: none;
+      align-items: center;
+      gap: 14px;
+      background: linear-gradient(135deg, #e8f6fb, #d0ecf6);
+      border: 1.5px solid var(--water);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 20px rgba(79,163,199,.18);
+      animation: pulse-border 1.8s ease infinite, fadeUp .5s ease both;
+      cursor: pointer;
+    }
+
+    #alerta-agua.ativo { display: flex; }
+
+    @keyframes pulse-border {
+      0%, 100% { box-shadow: 0 4px 20px rgba(79,163,199,.18); }
+      50%       { box-shadow: 0 4px 30px rgba(79,163,199,.40); }
+    }
+
+    .alerta-icon { font-size: 2rem; flex-shrink: 0; animation: wiggle 1.5s ease infinite; }
+
+    @keyframes wiggle {
+      0%,100% { transform: rotate(0deg); }
+      20%     { transform: rotate(-12deg); }
+      40%     { transform: rotate(12deg); }
+      60%     { transform: rotate(-6deg); }
+      80%     { transform: rotate(6deg); }
+    }
+
+    .alerta-texto strong {
+      display: block;
+      font-family: 'Fraunces', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--water);
+    }
+
+    .alerta-texto span { font-size: .88rem; color: #4a7d96; }
+
+    .alerta-fechar {
+      margin-left: auto;
+      background: rgba(79,163,199,.15);
+      border: none;
+      border-radius: 8px;
+      color: var(--water);
+      font-size: 1.1rem;
+      width: 34px; height: 34px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: background .2s;
+    }
+    .alerta-fechar:hover { background: rgba(79,163,199,.3); }
+
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .col-full { grid-column: 1 / -1; }
+
+    @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      animation: fadeUp .6s ease both;
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .card-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .card-title h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* ── ÁGUA ── */
+    .card-agua { animation-delay: .05s; }
+    .card-agua .card-icon { background: var(--water-bg); }
+
+    .agua-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 14px;
+    }
+
+    .agua-meta .num {
+      font-family: 'Fraunces', serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--water);
+    }
+
+    .agua-meta .meta-txt { font-size: .85rem; color: var(--muted); }
+
+    /* copo visual */
+    .copos-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .copo {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      border: 2px solid var(--water-fill);
+      background: transparent;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      transition: background .25s, transform .15s, border-color .25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .copo::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 0%;
+      background: linear-gradient(180deg, rgba(79,163,199,.3), rgba(79,163,199,.7));
+      transition: height .4s cubic-bezier(.34,1.56,.64,1);
+      border-radius: 0 0 6px 6px;
+    }
+
+    .copo.cheio {
+      border-color: var(--water);
+    }
+    .copo.cheio::after { height: 100%; }
+    .copo:not(.cheio):hover { border-color: var(--water); transform: scale(1.1); }
+
+    .copo span { position: relative; z-index: 1; font-size: .95rem; }
+
+    /* barra água */
+    .agua-barra-wrap {
+      background: var(--water-bg);
+      border-radius: 99px;
+      height: 8px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .agua-barra {
+      height: 100%;
+      background: linear-gradient(90deg, var(--water), #7ec8e3);
+      border-radius: 99px;
+      transition: width .5s cubic-bezier(.34,1.56,.64,1);
+      width: 0%;
+    }
+
+    .agua-acoes {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-agua {
+      background: var(--water-bg);
+      border: 1.5px solid var(--water-fill);
+      border-radius: 8px;
+      color: var(--water);
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: .85rem;
+      font-weight: 700;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: all .2s;
+      flex: 1;
+    }
+
+    .btn-agua:hover { background: var(--water); color: #fff; border-color: var(--water); }
+
+    /* lembrete config */
+    .lembrete-linha {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--border);
+      flex-wrap: wrap;
+    }
+
+    .lembrete-linha label { font-size: .82rem; color: var(--muted); font-weight: 600; white-space: nowrap; }
+
+    .lembrete-linha select {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: .85rem;
+      padding: 6px 10px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .btn-lembrete {
+      background: var(--sage);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: .82rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: background .2s, transform .15s;
+    }
+    .btn-lembrete:hover { background: #5a8c60; transform: scale(1.04); }
+    .btn-lembrete.parar { background: var(--terra); }
+    .btn-lembrete.parar:hover { background: #a85a3c; }
+
+    #timer-status { font-size: .78rem; color: var(--sage); font-weight: 600; }
+
+    /* ── HÁBITOS ── */
+    .card-habitos { animation-delay: .1s; }
+    .card-habitos .card-icon { background: var(--sage-bg); }
+
+    .habito-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--cream2);
+      cursor: pointer;
+      transition: background .15s;
+      border-radius: 8px;
+    }
+
+    .habito-item:last-child { border-bottom: none; }
+
+    .habito-check {
+      width: 24px; height: 24px;
+      border-radius: 7px;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+      font-size: .85rem;
+    }
+
+    .habito-item.feito .habito-check {
+      background: var(--sage);
+      border-color: var(--sage);
+      color: #fff;
+    }
+
+    .habito-info { flex: 1; }
+    .habito-info .nome { font-size: .95rem; font-weight: 600; transition: color .2s; }
+    .habito-item.feito .habito-info .nome { color: var(--muted); text-decoration: line-through; }
+    .habito-info .hora { font-size: .75rem; color: var(--muted); }
+
+    .habito-emoji { font-size: 1.2rem; }
+
+    .habitos-prog {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .prog-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: .78rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .prog-barra-wrap {
+      background: var(--sage-bg);
+      border-radius: 99px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    .prog-barra {
+      height: 100%;
+      background: linear-gradient(90deg, var(--sage), #9fcb9f);
+      border-radius: 99px;
+      transition: width .5s cubic-bezier(.34,1.56,.64,1);
+    }
+
+    /* ── REFEIÇÕES ── */
+    .card-refeicoes { animation-delay: .15s; }
+    .card-refeicoes .card-icon { background: var(--terra-bg); }
+
+    .refeicao-bloco { margin-bottom: 16px; }
+    .refeicao-bloco:last-child { margin-bottom: 0; }
+
+    .ref-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .ref-header .label {
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--terra);
+    }
+
+    .ref-hora { font-size: .75rem; color: var(--muted); margin-left: auto; }
+
+    .ref-itens { display: flex; flex-direction: column; gap: 5px; margin-bottom: 8px; }
+
+    .ref-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--cream);
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-size: .9rem;
+      animation: slideRight .3s ease both;
+    }
+
+    @keyframes slideRight {
+      from { opacity: 0; transform: translateX(-10px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .ref-item-del {
+      margin-left: auto;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #ccc;
+      font-size: .9rem;
+      transition: color .2s;
+    }
+    .ref-item-del:hover { color: var(--terra); }
+
+    .ref-form {
+      display: flex;
+      gap: 6px;
+    }
+
+    .ref-input {
+      flex: 1;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: .88rem;
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .ref-input:focus {
+      border-color: var(--terra);
+      box-shadow: 0 0 0 3px rgba(196,113,78,.1);
+    }
+
+    .ref-input::placeholder { color: var(--muted); }
+
+    .btn-ref-add {
+      background: var(--terra);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1.1rem;
+      width: 34px; height: 34px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: background .2s, transform .15s;
+    }
+
+    .btn-ref-add:hover { background: #a85a3c; transform: scale(1.08); }
+
+    .ref-sep {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 14px 0;
+    }
+
+    /* ── RESUMO ── */
+    .card-resumo { animation-delay: .2s; }
+    .card-resumo .card-icon { background: #fdf3e3; }
+
+    .resumo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .resumo-item {
+      background: var(--cream);
+      border-radius: 12px;
+      padding: 14px 12px;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    .resumo-item .r-num {
+      font-family: 'Fraunces', serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      display: block;
+      line-height: 1;
+    }
+
+    .resumo-item .r-label {
+      font-size: .75rem;
+      color: var(--muted);
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      margin-top: 4px;
+      display: block;
+    }
+
+    .frase-motivacional {
+      margin-top: 18px;
+      background: linear-gradient(135deg, var(--sage-bg), var(--cream2));
+      border-radius: 12px;
+      padding: 14px 16px;
+      border-left: 3px solid var(--sage);
+    }
+
+    .frase-motivacional p {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: .95rem;
+      color: var(--warm);
+      line-height: 1.5;
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--text);
+      color: var(--cream);
+      border-radius: 99px;
+      padding: 11px 22px;
+      font-size: .9rem;
+      font-weight: 600;
+      box-shadow: 0 8px 28px rgba(0,0,0,.2);
+      z-index: 200;
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+      white-space: nowrap;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── ANIMS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-top">
+      <div class="header-left">
+        <h1>Meu Dia <span>Saudável</span> 🌿</h1>
+        <p>Rotina, alimentação e hidratação em um só lugar</p>
+      </div>
+      <div id="data-hoje"></div>
+    </div>
+  </header>
+
+  <!-- ALERTA ÁGUA -->
+  <div id="alerta-agua">
+    <div class="alerta-icon">💧</div>
+    <div class="alerta-texto">
+      <strong>Hora de beber água!</strong>
+      <span>Seu corpo agradece. Vá buscar um copo agora 😊</span>
+    </div>
+    <button class="alerta-fechar" id="btn-fechar-alerta" title="Fechar">✕</button>
+  </div>
+
+  <div class="grid">
+
+    <!-- ══ ÁGUA ══ -->
+    <div class="card card-agua col-full">
+      <div class="card-title">
+        <div class="card-icon">💧</div>
+        <h2>Hidratação do Dia</h2>
+      </div>
+
+      <div class="agua-meta">
+        <span class="num"><span id="copos-count">0</span><span style="font-size:1.1rem;color:var(--muted);">/8</span></span>
+        <span class="meta-txt" id="agua-ml">0 ml de 2000 ml</span>
+      </div>
+
+      <div class="copos-grid" id="copos-grid"></div>
+
+      <div class="agua-barra-wrap">
+        <div class="agua-barra" id="agua-barra"></div>
+      </div>
+
+      <div class="agua-acoes">
+        <button class="btn-agua" id="btn-add-copo">＋ Beber 1 copo (250ml)</button>
+        <button class="btn-agua" id="btn-remove-copo" style="flex:0 1 auto;padding:8px 14px;">↩ Desfazer</button>
+        <button class="btn-agua" id="btn-reset-agua" style="flex:0 1 auto;padding:8px 14px;">🔄 Resetar</button>
+      </div>
+
+      <div class="lembrete-linha">
+        <label>⏰ Lembrete a cada:</label>
+        <select id="intervalo-select">
+          <option value="1">1 minuto (teste)</option>
+          <option value="30" selected>30 minutos</option>
+          <option value="60">1 hora</option>
+          <option value="120">2 horas</option>
+        </select>
+        <button class="btn-lembrete" id="btn-lembrete">▶ Ativar</button>
+        <span id="timer-status"></span>
+      </div>
+    </div>
+
+    <!-- ══ HÁBITOS ══ -->
+    <div class="card card-habitos">
+      <div class="card-title">
+        <div class="card-icon">✅</div>
+        <h2>Hábitos do Dia</h2>
+      </div>
+
+      <div id="habitos-lista">
+        <!-- gerado pelo JS -->
+      </div>
+
+      <div class="habitos-prog">
+        <div class="prog-labels">
+          <span id="hab-feitos-label">0 de 6 feitos</span>
+          <span id="hab-pct">0%</span>
+        </div>
+        <div class="prog-barra-wrap">
+          <div class="prog-barra" id="prog-barra" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ REFEIÇÕES ══ -->
+    <div class="card card-refeicoes">
+      <div class="card-title">
+        <div class="card-icon">🍽️</div>
+        <h2>Alimentação</h2>
+      </div>
+
+      <div id="refeicoes-container">
+        <!-- gerado pelo JS -->
+      </div>
+    </div>
+
+    <!-- ══ RESUMO ══ -->
+    <div class="card card-resumo col-full">
+      <div class="card-title">
+        <div class="card-icon">📊</div>
+        <h2>Resumo do Dia</h2>
+      </div>
+
+      <div class="resumo-grid">
+        <div class="resumo-item">
+          <span class="r-num" id="r-copos" style="color:var(--water);">0</span>
+          <span class="r-label">Copos bebidos</span>
+        </div>
+        <div class="resumo-item">
+          <span class="r-num" id="r-habitos" style="color:var(--sage);">0</span>
+          <span class="r-label">Hábitos feitos</span>
+        </div>
+        <div class="resumo-item">
+          <span class="r-num" id="r-refeicoes" style="color:var(--terra);">0</span>
+          <span class="r-label">Alimentos log.</span>
+        </div>
+      </div>
+
+      <div class="frase-motivacional">
+        <p id="frase-do-dia">"Cuide do seu corpo. É o único lugar em que você tem para viver." — Jim Rohn</p>
+      </div>
+    </div>
+
+  </div><!-- /grid -->
+</div><!-- /page -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════
+//  ESTADO
+// ═══════════════════════════════════════
+let copos    = 0;
+const META   = 8;
+let timerAtivo = false;
+let timerID;
+let proximoAlerta; // timestamp
+
+// ═══════════════════════════════════════
+//  DATA / SAUDAÇÃO
+// ═══════════════════════════════════════
+(function() {
+  const d = new Date();
+  const dias  = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  document.getElementById('data-hoje').textContent =
+    `${dias[d.getDay()]}, ${d.getDate()} de ${meses[d.getMonth()]}`;
+})();
+
+// ═══════════════════════════════════════
+//  COPOS
+// ═══════════════════════════════════════
+const coposGrid   = document.getElementById('copos-grid');
+const aguaBarra   = document.getElementById('agua-barra');
+const coposCount  = document.getElementById('copos-count');
+const aguaMl      = document.getElementById('agua-ml');
+
+function renderCopos() {
+  coposGrid.innerHTML = '';
+  for (let i = 0; i < META; i++) {
+    const div = document.createElement('div');
+    div.className = 'copo' + (i < copos ? ' cheio' : '');
+    div.innerHTML = '<span>' + (i < copos ? '💧' : '🫙') + '</span>';
+    const idx = i + 1;
+    div.addEventListener('click', () => {
+      if (idx <= copos) {
+        copos = idx - 1;
+      } else {
+        copos = idx;
+      }
+      atualizarAgua();
+    });
+    coposGrid.appendChild(div);
+  }
+  const pct = (copos / META) * 100;
+  aguaBarra.style.width = pct + '%';
+  coposCount.textContent = copos;
+  aguaMl.textContent     = (copos * 250) + ' ml de 2000 ml';
+  document.getElementById('r-copos').textContent = copos;
+}
+
+function atualizarAgua() {
+  renderCopos();
+  atualizarResumo();
+}
+
+document.getElementById('btn-add-copo').addEventListener('click', () => {
+  if (copos < META) {
+    copos++;
+    atualizarAgua();
+    if (copos === META) toast('🎉 Meta de hidratação atingida! Incrível!');
+    else toast('💧 +1 copo registrado!');
+  } else {
+    toast('✅ Você já atingiu a meta de hoje!');
+  }
+});
+
+document.getElementById('btn-remove-copo').addEventListener('click', () => {
+  if (copos > 0) { copos--; atualizarAgua(); toast('↩ Copo desfeito'); }
+});
+
+document.getElementById('btn-reset-agua').addEventListener('click', () => {
+  copos = 0; atualizarAgua(); toast('🔄 Hidratação resetada');
+});
+
+// ═══════════════════════════════════════
+//  LEMBRETE
+// ═══════════════════════════════════════
+const alertaEl   = document.getElementById('alerta-agua');
+const timerStatus = document.getElementById('timer-status');
+const btnLembrete = document.getElementById('btn-lembrete');
+let   countdownTimer;
+
+function mostrarAlerta() {
+  alertaEl.classList.add('ativo');
+  // auto-ocultar em 30s se não fechar
+  setTimeout(() => alertaEl.classList.remove('ativo'), 30000);
+}
+
+document.getElementById('btn-fechar-alerta').addEventListener('click', () => {
+  alertaEl.classList.remove('ativo');
+});
+
+function atualizarStatus() {
+  if (!timerAtivo) { timerStatus.textContent = ''; return; }
+  const agora = Date.now();
+  const resto = Math.max(0, proximoAlerta - agora);
+  const min   = Math.floor(resto / 60000);
+  const seg   = Math.floor((resto % 60000) / 1000);
+  timerStatus.textContent = `⏱ próximo em ${min}:${String(seg).padStart(2,'0')}`;
+}
+
+btnLembrete.addEventListener('click', () => {
+  if (!timerAtivo) {
+    timerAtivo = true;
+    btnLembrete.textContent = '⏹ Pausar';
+    btnLembrete.classList.add('parar');
+
+    const min = parseInt(document.getElementById('intervalo-select').value);
+    proximoAlerta = Date.now() + min * 60 * 1000;
+
+    timerID = setInterval(() => {
+      if (Date.now() >= proximoAlerta) {
+        mostrarAlerta();
+        const m2 = parseInt(document.getElementById('intervalo-select').value);
+        proximoAlerta = Date.now() + m2 * 60 * 1000;
+      }
+      atualizarStatus();
+    }, 1000);
+
+    toast('⏰ Lembrete de água ativado!');
+  } else {
+    timerAtivo = false;
+    clearInterval(timerID);
+    clearInterval(countdownTimer);
+    btnLembrete.textContent = '▶ Ativar';
+    btnLembrete.classList.remove('parar');
+    timerStatus.textContent = '';
+    toast('⏰ Lembrete desativado');
+  }
+});
+
+// ═══════════════════════════════════════
+//  HÁBITOS
+// ═══════════════════════════════════════
+const habitos = [
+  { id: 1, nome: 'Acordar cedo',        hora: '05:00 – 06:30', emoji: '🌅', feito: false },
+  { id: 2, nome: 'Tomar café da manhã', hora: '06:10 – 06:30', emoji: '🍳', feito: false },
+  { id: 3, nome: 'Escola',        hora: '08:00 – 09:00', emoji: '🏃', feito: false },
+  { id: 4, nome: 'lanche da Escola ',  hora: '09:00 – 09:15', emoji: '🧘', feito: false },
+  { id: 5, nome: 'Estudar ', hora: '09:30 – 12:30', emoji: '📚', feito: false },
+  { id: 6, nome: 'Dormir no horário',   hora: '22:00 – 23:00', emoji: '😴', feito: false },
+];
+
+function renderHabitos() {
+  const lista = document.getElementById('habitos-lista');
+  lista.innerHTML = '';
+  habitos.forEach(h => {
+    const div = document.createElement('div');
+    div.className = 'habito-item' + (h.feito ? ' feito' : '');
+    div.innerHTML = `
+      <div class="habito-check">${h.feito ? '✓' : ''}</div>
+      <div class="habito-info">
+        <div class="nome">${h.nome}</div>
+        <div class="hora">${h.hora}</div>
+      </div>
+      <span class="habito-emoji">${h.emoji}</span>
+    `;
+    div.addEventListener('click', () => {
+      h.feito = !h.feito;
+      renderHabitos();
+      atualizarResumo();
+      if (h.feito) toast(`${h.emoji} "${h.nome}" concluído!`);
+    });
+    lista.appendChild(div);
+  });
+
+  const feitos = habitos.filter(h => h.feito).length;
+  const total  = habitos.length;
+  const pct    = Math.round((feitos / total) * 100);
+  document.getElementById('hab-feitos-label').textContent = `${feitos} de ${total} feitos`;
+  document.getElementById('hab-pct').textContent          = pct + '%';
+  document.getElementById('prog-barra').style.width       = pct + '%';
+  document.getElementById('r-habitos').textContent        = feitos;
+}
+
+// ═══════════════════════════════════════
+//  REFEIÇÕES
+// ═══════════════════════════════════════
+const refeicoes = [
+  { id: 'cafe',   label: '☀️ Café da Manhã',   hora: '06h–09h',  itens: ['🍌 Banana','🥣 Aveia com leite'] },
+  { id: 'almoco', label: '🌤️ Almoço',           hora: '12h–14h',  itens: ['🥗 Salada verde'] },
+  { id: 'lanche', label: '🍎 Lanche da Tarde',  hora: '15h–17h',  itens: [] },
+  { id: 'jantar', label: '🌙 Jantar',            hora: '19h–21h',  itens: [] },
+];
+
+function renderRefeicoes() {
+  const cont = document.getElementById('refeicoes-container');
+  cont.innerHTML = '';
+
+  refeicoes.forEach((ref, ri) => {
+    const bloco = document.createElement('div');
+    bloco.className = 'refeicao-bloco';
+
+    const header = `
+      <div class="ref-header">
+        <span class="label">${ref.label}</span>
+        <span class="ref-hora">${ref.hora}</span>
+      </div>
+    `;
+
+    const itensHTML = ref.itens.map((it, ii) => `
+      <div class="ref-item" data-ri="${ri}" data-ii="${ii}">
+        <span>${escapar(it)}</span>
+        <button class="ref-item-del" data-ri="${ri}" data-ii="${ii}" title="Remover">✕</button>
+      </div>
+    `).join('');
+
+    const form = `
+      <div class="ref-form">
+        <input class="ref-input" data-ri="${ri}" type="text" placeholder="Adicionar alimento..." maxlength="50" />
+        <button class="btn-ref-add" data-ri="${ri}" title="Adicionar">＋</button>
+      </div>
+    `;
+
+    if (ri > 0) {
+      const sep = document.createElement('hr');
+      sep.className = 'ref-sep';
+      bloco.appendChild(sep);
+    }
+
+    bloco.innerHTML = header +
+      `<div class="ref-itens">${itensHTML}</div>` +
+      form;
+
+    cont.appendChild(bloco);
+  });
+
+  // eventos deletar
+  cont.querySelectorAll('.ref-item-del').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const ri = +btn.dataset.ri;
+      const ii = +btn.dataset.ii;
+      refeicoes[ri].itens.splice(ii, 1);
+      renderRefeicoes();
+      atualizarResumo();
+    });
+  });
+
+  // eventos add
+  cont.querySelectorAll('.btn-ref-add').forEach(btn => {
+    btn.addEventListener('click', () => adicionarItem(+btn.dataset.ri));
+  });
+
+  cont.querySelectorAll('.ref-input').forEach(inp => {
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter') adicionarItem(+inp.dataset.ri);
+    });
+  });
+}
+
+function adicionarItem(ri) {
+  const inp = document.querySelector(`.ref-input[data-ri="${ri}"]`);
+  const val = inp.value.trim();
+  if (!val) { toast('✏️ Digite o alimento!'); inp.focus(); return; }
+  refeicoes[ri].itens.push(val);
+  inp.value = '';
+  renderRefeicoes();
+  atualizarResumo();
+  toast('🍽️ Alimento registrado!');
+  document.querySelector(`.ref-input[data-ri="${ri}"]`).focus();
+}
+
+// ═══════════════════════════════════════
+//  RESUMO
+// ═══════════════════════════════════════
+const frases = [
+  '"Cuide do seu corpo. É o único lugar em que você tem para viver." — Jim Rohn',
+  '"A saúde é a maior riqueza que o ser humano pode ter." — Virgílio',
+  '"Beber água regularmente é o hábito mais simples e poderoso que você pode ter."',
+  '"Um dia de cada vez. Um copo de água de cada vez. Um hábito de cada vez."',
+  '"Seu corpo é reflexo dos seus hábitos diários. Cuide bem dele."',
+  '"Pequenas atitudes consistentes criam grandes transformações."',
+];
+
+document.getElementById('frase-do-dia').textContent =
+  frases[Math.floor(Math.random() * frases.length)];
+
+function atualizarResumo() {
+  const totalAlimentos = refeicoes.reduce((s, r) => s + r.itens.length, 0);
+  document.getElementById('r-refeicoes').textContent = totalAlimentos;
+}
+
+// ═══════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════
+const toastEl = document.getElementById('toast');
+let toastTimer;
+function toast(msg) {
+  clearTimeout(toastTimer);
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600);
+}
+
+function escapar(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+renderCopos();
+renderHabitos();
+renderRefeicoes();
+atualizarResumo();
+</script>
+</body>
+</html>

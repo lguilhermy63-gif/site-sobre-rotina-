@@ -1,0 +1,493 @@
+/* ============================================================
+   VidaSã — Rotina & Bem-estar  |  style.css
+   Paleta: verde-floresta + bege orgânico + terracota
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ── VARIÁVEIS ── */
+:root {
+  --green-dark:   #1b4332;
+  --green-mid:    #2d6a4f;
+  --green-light:  #52b788;
+  --green-pale:   #b7e4c7;
+  --green-bg:     #d8f3dc;
+  --beige:        #f8f4ed;
+  --beige-dark:   #ede8df;
+  --terracota:    #c1440e;
+  --terra-light:  #f4a261;
+  --water-blue:   #4cc9f0;
+  --water-dark:   #0077b6;
+  --text-dark:    #1a1a2e;
+  --text-mid:     #3d5a47;
+  --text-muted:   #8a9e90;
+  --white:        #ffffff;
+  --shadow-soft:  0 4px 24px rgba(27, 67, 50, 0.10);
+  --shadow-card:  0 8px 40px rgba(27, 67, 50, 0.13);
+  --radius:       18px;
+  --radius-sm:    10px;
+}
+
+/* ── RESET & BASE ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--beige);
+  color: var(--text-dark);
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 80% 10%, rgba(82, 183, 136, .18) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 10% 90%, rgba(76, 201, 240, .12) 0%, transparent 55%);
+}
+
+/* ── TOAST DE LEMBRETE ── */
+.water-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  background: linear-gradient(135deg, var(--water-dark), var(--water-blue));
+  color: var(--white);
+  padding: 14px 20px;
+  border-radius: var(--radius-sm);
+  font-size: .9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 6px 30px rgba(0, 119, 182, .35);
+  transform: translateX(120%);
+  transition: transform .4s cubic-bezier(.34, 1.56, .64, 1);
+  max-width: 340px;
+}
+
+.water-toast.show { transform: translateX(0); }
+
+.water-toast button {
+  background: rgba(255,255,255,.25);
+  border: none;
+  color: var(--white);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: .75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background .2s;
+}
+.water-toast button:hover { background: rgba(255,255,255,.45); }
+
+/* ── HEADER ── */
+.header {
+  background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+  padding: 20px 0;
+  box-shadow: 0 4px 20px rgba(27, 67, 50, .25);
+}
+
+.header-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon { font-size: 1.8rem; }
+
+.logo-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.7rem;
+  font-weight: 900;
+  color: var(--white);
+  letter-spacing: -0.5px;
+}
+
+.header-date {
+  color: var(--green-pale);
+  font-size: .85rem;
+  font-weight: 500;
+  letter-spacing: .5px;
+  text-transform: capitalize;
+}
+
+/* ── LAYOUT PRINCIPAL ── */
+.main {
+  max-width: 860px;
+  margin: 36px auto 40px;
+  padding: 0 20px;
+  display: grid;
+  gap: 28px;
+}
+
+/* ── CARD BASE ── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 30px 32px;
+  box-shadow: var(--shadow-card);
+  border: 1.5px solid rgba(82, 183, 136, .15);
+  transition: box-shadow .3s;
+}
+.card:hover { box-shadow: 0 12px 50px rgba(27, 67, 50, .18); }
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--green-dark);
+}
+
+.card-badge {
+  background: var(--green-bg);
+  color: var(--green-dark);
+  font-size: .78rem;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 30px;
+  letter-spacing: .4px;
+}
+
+/* ── ÁGUA: BARRA DE PROGRESSO ── */
+.progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 14px;
+  background: var(--beige-dark);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--water-blue), var(--water-dark));
+  border-radius: 999px;
+  transition: width .5s cubic-bezier(.4, 0, .2, 1);
+}
+
+.progress-pct {
+  min-width: 42px;
+  text-align: right;
+  font-size: .95rem;
+  font-weight: 600;
+  color: var(--water-dark);
+}
+
+/* ── ÁGUA: GRADE DE COPOS ── */
+.cups-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.cup {
+  font-size: 2rem;
+  cursor: pointer;
+  filter: grayscale(1) opacity(.35);
+  transform: scale(.9);
+  transition: filter .3s, transform .3s;
+  user-select: none;
+}
+
+.cup.filled {
+  filter: grayscale(0) opacity(1);
+  transform: scale(1.05);
+  animation: cupPop .3s cubic-bezier(.34,1.56,.64,1);
+}
+
+@keyframes cupPop {
+  0%   { transform: scale(.8); }
+  60%  { transform: scale(1.15); }
+  100% { transform: scale(1.05); }
+}
+
+/* ── ÁGUA: CONTROLES ── */
+.water-controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.water-msg {
+  font-size: .88rem;
+  font-weight: 500;
+  color: var(--water-dark);
+  text-align: center;
+  min-height: 20px;
+  transition: color .3s;
+}
+
+/* ── BOTÕES ── */
+.btn {
+  padding: 11px 20px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: .88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s, background .2s;
+}
+
+.btn:active { transform: scale(.96); }
+
+.btn-water-plus {
+  background: linear-gradient(135deg, var(--water-blue), var(--water-dark));
+  color: var(--white);
+  box-shadow: 0 4px 16px rgba(76, 201, 240, .35);
+}
+.btn-water-plus:hover { box-shadow: 0 6px 22px rgba(76, 201, 240, .5); }
+
+.btn-water-minus {
+  background: var(--beige-dark);
+  color: var(--text-mid);
+}
+.btn-water-minus:hover { background: #e0dbd0; }
+
+.btn-add {
+  background: linear-gradient(135deg, var(--green-light), var(--green-mid));
+  color: var(--white);
+  box-shadow: 0 4px 16px rgba(82, 183, 136, .35);
+  white-space: nowrap;
+}
+.btn-add:hover { box-shadow: 0 6px 22px rgba(82, 183, 136, .5); }
+
+.btn-remove {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background .2s, color .2s;
+  flex-shrink: 0;
+}
+.btn-remove:hover { background: #fde8e0; color: var(--terracota); }
+
+/* ── ROTINA ── */
+.routine-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.routine-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--beige);
+  border: 1.5px solid transparent;
+  transition: background .25s, border-color .25s, opacity .25s;
+  gap: 8px;
+}
+
+.routine-item.done {
+  background: #edfaf1;
+  border-color: var(--green-pale);
+  opacity: .75;
+}
+
+.check-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.check-input { display: none; }
+
+.check-box {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--green-light);
+  border-radius: 6px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s, border-color .2s;
+}
+
+.check-input:checked ~ .check-box {
+  background: var(--green-light);
+  border-color: var(--green-light);
+}
+
+.check-input:checked ~ .check-box::after {
+  content: '✓';
+  color: white;
+  font-size: .85rem;
+  font-weight: 700;
+}
+
+.routine-text {
+  font-size: .9rem;
+  font-weight: 500;
+  transition: text-decoration .2s, color .2s;
+}
+
+.routine-item.done .routine-text {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.routine-time {
+  font-size: .73rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--beige-dark);
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── REFEIÇÕES ── */
+.meal-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.meal-list::-webkit-scrollbar { width: 5px; }
+.meal-list::-webkit-scrollbar-thumb { background: var(--green-pale); border-radius: 4px; }
+
+.meal-empty {
+  color: var(--text-muted);
+  font-size: .88rem;
+  text-align: center;
+  padding: 16px 0;
+}
+
+.meal-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--beige);
+  border-left: 4px solid var(--green-light);
+  animation: slideIn .3s ease;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.meal-type {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--green-mid);
+  background: var(--green-bg);
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.meal-text {
+  flex: 1;
+  font-size: .9rem;
+  font-weight: 400;
+  color: var(--text-dark);
+}
+
+.meal-time {
+  font-size: .75rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* ── INPUTS ── */
+.input-field {
+  flex: 1;
+  padding: 11px 16px;
+  border: 1.5px solid var(--beige-dark);
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: .9rem;
+  background: var(--beige);
+  color: var(--text-dark);
+  transition: border-color .2s, box-shadow .2s;
+  outline: none;
+  min-width: 0;
+}
+
+.input-field:focus {
+  border-color: var(--green-light);
+  box-shadow: 0 0 0 3px rgba(82, 183, 136, .18);
+}
+
+.select-field {
+  flex: 0 0 auto;
+  min-width: 160px;
+}
+
+.add-routine-wrap,
+.add-meal-wrap {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  padding: 24px;
+  color: var(--text-muted);
+  font-size: .83rem;
+  letter-spacing: .3px;
+}
+
+/* ── RESPONSIVO ── */
+@media (max-width: 600px) {
+  .main { padding: 0 14px; margin-top: 24px; }
+  .card { padding: 22px 18px; }
+  .card-title { font-size: 1.15rem; }
+  .water-controls { flex-direction: column; }
+  .btn { width: 100%; text-align: center; }
+  .add-meal-wrap { flex-direction: column; }
+  .select-field { min-width: 100%; }
+  .header-date { display: none; }
+}
